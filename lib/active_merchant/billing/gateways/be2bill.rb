@@ -9,7 +9,7 @@ module ActiveMerchant #:nodoc:
       self.display_name = 'Be2Bill'
       self.homepage_url = 'http://www.be2bill.com/'
       self.supported_countries = ['FR']
-      self.supported_cardtypes = [:visa, :master, :american_express]
+      self.supported_cardtypes = [:visa, :master, :american_express, :maestro]
       self.default_currency = 'EUR'
       self.money_format = :cents
 
@@ -41,12 +41,11 @@ module ActiveMerchant #:nodoc:
         post = {}
         add_invoice(post, options)
         add_customer_data(post, options)
-        if options[:customer]
-          add_alias(post, options)
-        else
+        if creditcard.respond_to? :number
           add_creditcard(post, creditcard)
+        else
+          add_customer(post, options)
         end
-
         commit('payment', money, post)
       end
 
@@ -69,7 +68,7 @@ module ActiveMerchant #:nodoc:
         post[:CREATEALIAS]     = options[:store] ? 'YES' : 'NO'
       end
 
-      def add_alias(post, options)
+      def add_customer(post, options)
         post[:ALIAS]     = options[:customer]
         post[:ALIASMODE] = options[:mode] || 'ONECLICK'
       end
