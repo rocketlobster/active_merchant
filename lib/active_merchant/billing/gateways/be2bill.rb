@@ -37,11 +37,11 @@ module ActiveMerchant #:nodoc:
         commit('authorization', money, post)
       end
 
-      def refund transaction_id, options
+      def refund transaction_id, amount, options
         post = {:TRANSACTIONID => transaction_id}
         add_invoice(post, options)
 
-        commit('refund', nil, post)
+        commit('refund', amount, post)
       end
 
       def purchase(money, creditcard, options = {})
