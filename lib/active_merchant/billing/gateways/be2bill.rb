@@ -48,9 +48,9 @@ module ActiveMerchant #:nodoc:
         post = {}
         add_invoice(post, options)
         add_customer_data(post, options)
-        if creditcard.respond_to? :number
+        if creditcard
           add_creditcard(post, creditcard)
-        else
+        elsif options[:customer]
           add_customer(post, options)
         end
         commit('payment', money, post)
